@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Raul,Raquel,Eric" />
+    <meta name="description" content="Calculator" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/all.css" />
+    <title>Calculator</title>
+  </head>
+  <body>
+    <div id="calculator">
+      <table>
+        <tr class="row-display">
+          <td class="td-display">
+            <p type="button" id="display">0</p>
+          </td>
+        </tr>
+        <tr class="row-one">
+          <td class="clear">
+            <button id="clear" type="reset">
+              C
+            </button>
+          </td>
+          <td class="td-symbols">
+            <button type="button" id="sign">+/-</button>
+          </td>
+          <td class="td-symbols">
+            <button type="button" class="operator">/</button>
+          </td>
+        </tr>
+        <tr class="row-two">
+          <td class="td-numbers">
+            <button type="button" class="numbers">7</button>
+          </td>
+          <td class="td-numbers">
+            <button type="button" class="numbers">8</button>
+          </td>
+          <td class="td-numbers">
+            <button type="button" class="numbers">9</button>
+          </td>
+          <td class="td-symbols">
+            <button type="button" class="operator">*</button>
+          </td>
+        </tr>
+        <tr class="row-three">
+          <td class="td-numbers">
+            <button type="button" class="numbers">4</button>
+          </td>
+          <td class="td-numbers">
+            <button type="button" class="numbers">5</button>
+          </td>
+          <td class="td-numbers">
+            <button type="button" class="numbers">6</button>
+          </td>
+          <td class="td-symbols">
+            <button type="button" class="operator">-</button>
+          </td>
+        </tr>
+        <tr class="row-four">
+          <td class="td-numbers">
+            <button type="button" class="numbers">1</button>
+          </td>
+          <td class="td-numbers">
+            <button type="button" class="numbers">2</button>
+          </td>
+          <td class="td-numbers">
+            <button type="button" class="numbers">3</button>
+          </td>
+          <td class="td-symbols">
+            <button type="button" class="operator">+</button>
+          </td>
+        </tr>
+        <tr class="row-five">
+          <td class="td-zero">
+            <button type="button"  class="numbers" id="btn-zero">0</button>
+          </td>
+          <td class="td-numbers">
+            <button type="button" id="comma">,</button>
+          </td>
+          <td class="td-symbols">
+            <button type="button" id="equals">=</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <script src="scripts/main.js"></script>
+  </body>
+</html>
