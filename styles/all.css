@@ -1,0 +1,167 @@
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@100&display=swap");
+* {
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+}
+
+#clear {
+  width: 162px;
+  height: 72px;
+  background: #767474;
+  border-radius: 24px;
+}
+
+#clear:active {
+  background-color: gray;
+}
+
+#calculator {
+  border: 2px solid black;
+  border-radius: 24px;
+  width: 375px;
+  height: 650px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 100px;
+  background-color: black;
+  box-shadow: 15px -10px grey;
+}
+
+.td-numbers {
+  width: 73px;
+  height: 72px;
+  background: #2e2f38;
+  border-radius: 24px;
+}
+
+.td-numbers:active {
+  background-color: grey;
+}
+
+.td-symbols {
+  background: #fcc04b;
+  border-radius: 24px;
+  width: 73px;
+  height: 72px;
+}
+
+.td-symbols:active {
+  background-color: orange;
+}
+
+button {
+  background-color: transparent;
+  border: transparent;
+  font-weight: bolder;
+  font-style: normal;
+  width: 73px;
+  height: 72px;
+  color: #ffffff;
+  font-size: 32px;
+  border-radius: 24px;
+  font-family: "Work Sans", sans-serif;
+}
+
+.row-display {
+  display: flex;
+  position: relative;
+  width: 345px;
+  height: 100px;
+  margin-left: 7.5px;
+  margin-top: 80px;
+}
+
+.td-display {
+  border-radius: 24px;
+  width: 345px;
+  height: 100px;
+}
+
+#display {
+  background-color: transparent;
+  font-weight: bolder;
+  font-style: normal;
+  width: 345px;
+  height: 100px;
+  color: #ffffff;
+  font-size: 32px;
+  border-radius: 24px;
+  font-family: "Work Sans", sans-serif;
+  border: 1px solid white;
+  display: flex;
+  padding-right: 10px;
+  justify-content: right;
+  align-items: center;
+}
+
+.row-one {
+  display: flex;
+  gap: 16px;
+  position: relative;
+  width: 335px;
+  height: 72px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+}
+
+.row-two {
+  display: flex;
+  gap: 16px;
+  position: relative;
+  width: 335px;
+  height: 72px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+}
+
+.row-three {
+  display: flex;
+  gap: 16px;
+  position: relative;
+  width: 335px;
+  height: 72px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+}
+
+.row-four {
+  display: flex;
+  gap: 16px;
+  position: relative;
+  width: 335px;
+  height: 72px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+}
+
+.row-five {
+  display: flex;
+  gap: 16px;
+  position: relative;
+  width: 335px;
+  height: 72px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+}
+
+#btn-zero {
+  width: 165px;
+  height: 72px;
+  background-color: #2e2f38;
+  border-radius: 24px;
+}
+
+#btn-zero:active {
+  background-color: grey;
+}
+
+#td-zero {
+  width: 165px;
+  height: 72px;
+}
