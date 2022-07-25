@@ -1,98 +1,104 @@
 const display = document.querySelector('#display');
-const elements = document.querySelector('#calculator').querySelectorAll('button');
+const buttons = document.querySelector('#calculator').querySelectorAll('button');
+const commaButton = buttons[16];
+const C_button = buttons[0];
 
-let num1;
-let num2;
+let numText1 = "";
+let numText2= "";
 let result;
-let operatorElement;
+let operatorButton;
 let operatorOn = false;
 let commaOn = false;
 let signOn = false;
 let disabledButtons = false;
 
-elements.forEach(element => element.addEventListener('click', event => {start(event.target)}));
+buttons.forEach(button => button.addEventListener('click', event => {eventStart(event.target)}));
 
 window.addEventListener("keydown", function (event) {
     event.preventDefault();
-    if(event.key == "Escape") start(elements[0]);
+    if(event.key == "Escape") eventStart(buttons[0]);
     if(!disabledButtons){
-        if(event.ctrlKey) start(elements[1]);
-        else if(event.key == 1) start(elements[11]);
-        else if(event.key == 2) start(elements[12]);
-        else if(event.key == 3) start(elements[13]);
-        else if(event.key == 4) start(elements[7]);
-        else if(event.key == 5) start(elements[8]);
-        else if(event.key == 6) start(elements[9]);
-        else if(event.key == 7) start(elements[3]);
-        else if(event.key == 8) start(elements[4]);
-        else if(event.key == 9) start(elements[5]);
-        else if(event.key == 0) start(elements[15]);
-        else if(event.key == "+") start(elements[14]);
-        else if(event.key == "-") start(elements[10]);
-        else if(event.key == "*") start(elements[6]);
-        else if(event.key == "/") start(elements[2]);
-        else if(event.key == "Enter") start(elements[17]);
-        else if(event.key == ",") start(elements[16]);
+        if(event.ctrlKey) eventStart(buttons[1]);
+        else if(event.key == 1) eventStart(buttons[11]);
+        else if(event.key == 2) eventStart(buttons[12]);
+        else if(event.key == 3) eventStart(buttons[13]);
+        else if(event.key == 4) eventStart(buttons[7]);
+        else if(event.key == 5) eventStart(buttons[8]);
+        else if(event.key == 6) eventStart(buttons[9]);
+        else if(event.key == 7) eventStart(buttons[3]);
+        else if(event.key == 8) eventStart(buttons[4]);
+        else if(event.key == 9) eventStart(buttons[5]);
+        else if(event.key == 0) eventStart(buttons[15]);
+        else if(event.key == "+") eventStart(buttons[14]);
+        else if(event.key == "-") eventStart(buttons[10]);
+        else if(event.key == "*") eventStart(buttons[6]);
+        else if(event.key == "/") eventStart(buttons[2]);
+        else if(event.key == "Enter") eventStart(buttons[17]);
+        else if(event.key == ",") eventStart(buttons[16]);
     }
 });
 
-function start(element){
-    if(element.getAttribute("class") == "numbers") addNum(element.innerHTML);
-    else if(element.getAttribute("class") == "operator") operation(element);
-    else if(element.getAttribute("id") == "equals") equals();
-    else if(element.getAttribute("id") == "clear") reset();
-    else if(element.getAttribute("id") == "comma") comma(element) ;
-    else if(element.getAttribute("id") == "sign") sign();
+function eventStart(button){
+    if(button.getAttribute("class") == "numbers") addNum(button.innerHTML);
+    else if(button.getAttribute("class") == "operator") operation(button);
+    else if(button.getAttribute("id") == "equals") equals();
+    else if(button.getAttribute("id") == "clear") reset();
+    else if(button.getAttribute("id") == "comma") comma() ;
+    else if(button.getAttribute("id") == "sign") sign();
 }
 
 function addNum(num) {
-    if(!operatorOn && (num1 == "" || num1 === undefined) && num == "0") return;
-    if(operatorOn && num2 == "0" && num == "0") return;
+    if(!operatorOn && numText1 == "" && num == "0") return;
+    if(operatorOn && numText2 == "0" && num == "0") return;
     if(!operatorOn) addNum1(num);
     else addNum2(num);    
 }
 
 function addNum1(num){
-    if(num1 == "" || num1 === undefined){
+    let lengthOnlyNum1 = numText1.replace(/[^0-9]/g, '').length;
+
+    if(numText1 == ""){
         result = null;
         display.innerHTML = num; 
-        num1 = num;        
-    }else if(!operatorOn && (10 >  num1.replace(/[^0-9]/g, '').length)){ 
+        numText1 = num;        
+    }else if(!operatorOn && (10 >  lengthOnlyNum1)){ 
         display.innerHTML = (display.innerHTML + num);
-        num1 += num;
+        numText1 += num;
     }
 }
 
 function addNum2(num){
-    if(num2 == "" || num2 === undefined){
+    let lengthOnlyNum2 = numText2.replace(/[^0-9]/g, '').length;
+
+    if(numText2 == ""){
         display.innerHTML = num; 
-        num2 = num;
-    }else if(10 >  num2.replace(/[^0-9]/g, '').length){
-        if(num2 == "0" && num != "0" ){
-            num2 = num;
+        numText2 = num;
+    }else if(10 >  lengthOnlyNum2){
+        if(numText2 == "0" && num != "0" ){
+            numText2 = num;
             display.innerHTML = num;
         }else{
             display.innerHTML = (display.innerHTML + num);
-            num2 += num;
+            numText2 += num;
         }
     }
 }
 
 function operation(operator){
     if(result != null && !operatorOn){
-            num1 = result.toString();
+            numText1 = result.toString();
             result = null;
-            num2 = "";
+            numText2 = "";
     }    
-    if(num2 == "" || num2 === undefined){
-        if(operatorElement != null) operatorElement.style.backgroundColor = '#fcc04b';
-        operatorElement = operator;
+    if(numText2 == ""){
+        if(operatorButton != null) highLightingButton(operatorButton, false);
+        operatorButton = operator;
         operatorOn = true;
-        operator.style.backgroundColor = 'orange';
-        if(commaOn) elements[16].style.backgroundColor = '#fcc04b';
+        highLightingButton(operatorButton, true);
+        if(commaOn) highLightingButton(commaButton, false);
         commaOn = false;
         signOn = false;
-        if(num1 == "" || num1 === undefined) num1 = "0";
+        if(numText1 == "") numText1 = "0";
     }else doubleOperation(operator);
 }
 
@@ -102,29 +108,19 @@ function doubleOperation(operator){
     else{
         if(result.toString().includes(".")) roundResult();
         showResult(result);
-        num1 = result.toString();
-        num2 = "";
-        operatorElement.style.backgroundColor = '#fcc04b';
-        operatorElement = operator;
-        operatorElement.style.backgroundColor = 'orange';
-        if(commaOn) elements[16].style.backgroundColor = '#fcc04b';
+        numText1 = result.toString();
+        numText2 = "";
+        highLightingButton(operatorButton, false);
+        operatorButton = operator;
+        highLightingButton(operator, true);
+        if(commaOn) highLightingButton(commaButton, false);
         commaOn = false;
         signOn = false;        
     }
 }
 
 function equals() {
-    if((num2 == "" || num2 === undefined) && !operatorOn){
-        resetOperation();
-        if(display.innerHTML != "0"){
-            num1 = display.innerHTML.replace(",",".");
-            if(num1.includes("-")) signOn = true;
-            if(num1.includes(".")){
-                commaOn =  true;
-                elements[16].style.backgroundColor = 'orange';
-        }
-    }
-    }else if((num2 == "" || num2 === undefined) && operatorOn){
+    if(numText2 == "" && operatorOn){
         displayError();
     }else{
         getResult();
@@ -132,66 +128,71 @@ function equals() {
         else{
             if(result.toString().includes(".")) roundResult();
             showResult(result);
-            resetOperation();
+            finishOperation();
         }
     }
 }
 
 function getResult(){
-    if(operatorElement.innerHTML == "+") result = plus();
-    if(operatorElement.innerHTML == "-") result = minus();
-    if(operatorElement.innerHTML == "*") result = multiply();
-    if(operatorElement.innerHTML == "/"){ 
-        if(num2 == "0" || num2 == "0,"){
+    if(operatorButton.innerHTML == "+") result = plus();
+    if(operatorButton.innerHTML == "-") result = minus();
+    if(operatorButton.innerHTML == "*") result = multiply();
+    if(operatorButton.innerHTML == "/"){ 
+        if(numText2 == "0" || numText2 == "0,"){
             displayError();
         }else result = divide();
     }
 }
 
 function roundResult(){
-    let resultString = result.toString().replace("-","");
-    let integer = "";
-    let decimal = "0.";
+    let resultText = result.toString().replace("-","");
+    let integerText = "";
+    let decimalText = "0.";
     let decimalOn = false;
     let resultNegative = (result < 0);
 
-    for(i = 0; i < resultString.length; i++){
-        if(resultString[i] == ".") decimalOn = true;
-        else if(!decimalOn) integer += resultString[i];
-        else decimal += resultString[i]; 
+    for(i = 0; i < resultText.length; i++){
+        if(resultText[i] == ".") decimalOn = true;
+        else if(!decimalOn) integerText += resultText[i];
+        else decimalText += resultText[i]; 
     }
-    decimal = parseFloat(decimal).toFixed(10 - integer.length);
-    if(resultNegative) result = (parseFloat(integer) + parseFloat(decimal)) * -1;
-    else result = parseFloat(integer) + parseFloat(decimal);
+    decimalText = parseFloat(decimalText).toFixed(10 - integerText.length);
+    if(resultNegative) result = (parseFloat(integerText) + parseFloat(decimalText)) * -1;
+    else result = parseFloat(integerText) + parseFloat(decimalText);
 }
 
 function showResult(result){
-    if(result.toString().replace(/[^0-9]/g, '').length > 10){
-            if(signOn && commaOn) display.innerHTML = result.toString().substring(0,12).replace(".",",");
-            else if (signOn || commaOn) display.innerHTML = result.toString().substring(0,11).replace(".",",");
-    }else display.innerHTML = result.toString().replace(".",",");
+    let lengthOnlyNumResult = result.toString().replace(/[^0-9]/g, '').length;
+    let resultTextDisplay = result.toString().replace(".",",");
+
+    if(lengthOnlyNumResult > 10){
+            if(signOn && commaOn) display.innerHTML = resultTextDisplay.substring(0,12);
+            else if (signOn || commaOn) display.innerHTML = resultTextDisplay.substring(0,11);
+    }else display.innerHTML = resultTextDisplay;
 }
 
-function comma(element){
-    if(!commaOn){
-        element.style.backgroundColor = 'orange';
-        commaOn = true;
+function comma(){
+    let lengthOnlyNum1 = numText1.replace(/[^0-9]/g, '').length;
+    let lengthOnlyNum2 = numText2.replace(/[^0-9]/g, '').length;
 
-        if(!operatorOn && (num1 == "" || num1 === undefined)){
+    if(!commaOn){
+        highLightingButton(commaButton, true);
+        commaOn = true;
+        if(!operatorOn && numText1 == ""){
             result = null;
             display.innerHTML = "0,";
-            num1 = "0.";
-        }else if (operatorOn && (num2 == "" || num2 === undefined)){
+            numText1 = "0.";
+        }else if (operatorOn && numText2 == ""){
             display.innerHTML = "0,";
-            num2 = "0.";
-        }else if (!operatorOn && (10 >  num1.replace(/[^0-9]/g, '').length)){
+            numText2 = "0.";
+        }else if (!operatorOn && (10 >  lengthOnlyNum1)){
             display.innerHTML += ","; 
-            num1 += ".";
-        }else if(operatorOn && (10 >  num2.replace(/[^0-9]/g, '').length)){
+            numText1 += ".";
+        }else if(operatorOn && (10 >  lengthOnlyNum2)){
             display.innerHTML += ","; 
-            num2 += ".";
+            numText2 += ".";
         }else{
-            element.style.backgroundColor = '#fcc04b';
+            highLightingButton(commaButton, false);
             commaOn = false;
         }
     }
@@ -199,81 +200,95 @@ function comma(element){
 
 function sign(){
     if(result != null && !operatorOn){
-        num1 = result.toString();
+        numText1 = result.toString();
         result = null;
     } 
-    if(num1 == "" || num1 === undefined) return;
-    if(operatorOn && (num2 == "" || num2 === undefined)) return;
+    if(numText1 == "") return;
+    if(operatorOn && numText2 == "") return;
     if(!signOn) signNegative();
     else signPositive();    
 }
 
 function signNegative(){
-    if(!operatorOn && (num1 != "0" && num1 != "0.")){
+    if(!operatorOn && (numText1 != "0" && numText1 != "0.")){
         display.innerHTML = "-" + display.innerHTML;
-        num1 = "-" + num1;
+        numText1 = "-" + numText1;
         signOn = true;
-    }else if(operatorOn && (num2 != "0" && num2 != "0.")){
+    }else if(operatorOn && (numText2 != "0" && numText2 != "0.")){
         display.innerHTML = "-" + display.innerHTML;
-        num2 = "-" + num2;
+        numText2 = "-" + numText2;
         signOn = true;
     } 
 }
 
 function signPositive(){
-    if(!operatorOn && (num1 != "0" && num1 != "0.")){
-        num1 = num1.replace("-","");
-        display.innerHTML = num1.replace(".",",");
+    if(!operatorOn && (numText1 != "0" && numText1 != "0.")){
+        numText1 = numText1.replace("-","");
+        display.innerHTML = numText1.replace(".",",");
         signOn = false;
-    }else if(operatorOn && (num2 != "0" && num2 != "0.")){
-        num2 = num2.replace("-","");
-        display.innerHTML = num2.replace(".",",");
+    }else if(operatorOn && (numText2 != "0" && numText2 != "0.")){
+        numText2 = numText2.replace("-","");
+        display.innerHTML = numText2.replace(".",",");
         signOn = false;
     } 
 }
 
+function highLightingButton(button, active){
+    if(active) button.style.backgroundColor = "orange";
+    else button.style.backgroundColor = "#fcc04b";
+}
+
+function disabledButtonsAndColor(button, disabled){
+    if(disabled){
+        button.disabled = disabled;
+        button.style.color = "red";
+    } 
+    else{
+        button.disabled = disabled;
+        button.style.color = "#ffffff";
+    } 
+}
+
 function plus(){
-    return (parseFloat(num1)  + parseFloat(num2));
+    return (parseFloat(numText1)  + parseFloat(numText2));
 }
 
 function minus() {
-    return (parseFloat(num1)  - parseFloat(num2));
+    return (parseFloat(numText1)  - parseFloat(numText2));
 }
 
 function multiply() {
-    return (parseFloat(num1)  * parseFloat(num2));
+    return (parseFloat(numText1)  * parseFloat(numText2));
 }
 
 function divide() {
-    return (parseFloat(num1)  / parseFloat(num2));
-    
+    return (parseFloat(numText1)  / parseFloat(numText2));  
 }
 
 function displayError(){
     disabledButtons = true;
     display.innerHTML = "ERROR";
-    elements.forEach(element => {element.disabled = true; element.style.color = "red"});
-    elements[0].disabled = false;
-    elements[0].style.color = "#ffffff";
+    buttons.forEach(button => {disabledButtonsAndColor(button, true)});
+    disabledButtonsAndColor(C_button, false);
+}
+
+function finishOperation() {
+    numText1 = "";
+    numText2 = "";
+    if(operatorOn) highLightingButton(operatorButton, false);
+    operatorOn = false;
+    operatorButton = null;
+    if(commaOn) highLightingButton(commaButton, false);
+    commaOn = false;
+    signOn = false;
 }
 
 function reset() {
-    resetOperation();
+    finishOperation();
     result = null;
     display.innerHTML = 0;
     if(disabledButtons){
-        elements.forEach(element => {element.disabled = false; element.style.color = "#ffffff"});
+        buttons.forEach(button => {disabledButtonsAndColor(button, false)});
         disabledButtons = false;
     }
-}
-
-function resetOperation() {
-    num1 = "";
-    num2 = "";
-    if(operatorOn) operatorElement.style.backgroundColor = '#fcc04b';
-    operatorOn = false;
-    operatorElement = null;
-    if(commaOn) elements[16].style.backgroundColor = '#fcc04b';
-    commaOn = false;
-    signOn = false;
 }
