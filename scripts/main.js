@@ -111,7 +111,7 @@ function doubleOperation(operator){
     getResult();
     if(result > 9999999999 || result < -9999999999 || result == null) displayError();
     else{
-        if(result.toString().includes(".")) roundResult(result);
+        if(result.toString().includes(".")) result = roundResult(result);
         showResult(result);
         numText1 = result.toString();
         numText2 = "";
@@ -131,7 +131,7 @@ function equals() {
         getResult();
         if(result > 9999999999 || result < -9999999999 || result == null) displayError();
         else{
-            if(result.toString().includes(".")) roundResult(result);
+            if(result.toString().includes(".")) result = roundResult(result);
             showResult(result);
             finishOperation();
         }
@@ -164,6 +164,7 @@ function roundResult(result){
     decimalText = parseFloat(decimalText).toFixed(10 - integerText.length);
     if(resultNegative) result = (parseFloat(integerText) + parseFloat(decimalText)) * -1;
     else result = parseFloat(integerText) + parseFloat(decimalText);
+    return result;
 }
 
 function showResult(result){
