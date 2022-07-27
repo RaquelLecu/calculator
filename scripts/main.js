@@ -150,7 +150,7 @@ function getResult(){
 }
 
 function roundResult(result){
-    let resultText = result.toString().replace("-","");
+    let resultText = result.toFixed(10).replace("-","");
     let integerText = "";
     let decimalText = "0.";
     let decimalOn = false;
