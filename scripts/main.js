@@ -111,7 +111,7 @@ function doubleOperation(operator){
     getResult();
     if(result > 9999999999 || result < -9999999999 || result == null) displayError();
     else{
-        if(result.toString().includes(".")) roundResult();
+        if(result.toString().includes(".")) roundResult(result);
         showResult(result);
         numText1 = result.toString();
         numText2 = "";
@@ -131,7 +131,7 @@ function equals() {
         getResult();
         if(result > 9999999999 || result < -9999999999 || result == null) displayError();
         else{
-            if(result.toString().includes(".")) roundResult();
+            if(result.toString().includes(".")) roundResult(result);
             showResult(result);
             finishOperation();
         }
@@ -149,24 +149,21 @@ function getResult(){
     }
 }
 
-function roundResult(){
-    result = result.toFixed(10);
-    if(result.toString().includes(".")){
-        let resultText = result.toString().replace("-","");
-        let integerText = "";
-        let decimalText = "0.";
-        let decimalOn = false;
-        let resultNegative = (result < 0);
+function roundResult(result){
+    let resultText = result.toString().replace("-","");
+    let integerText = "";
+    let decimalText = "0.";
+    let decimalOn = false;
+    let resultNegative = (result < 0);
 
-        for(i = 0; i < resultText.length; i++){
-            if(resultText[i] == ".") decimalOn = true;
+    for(i = 0; i < resultText.length; i++){
+        if(resultText[i] == ".") decimalOn = true;
             else if(!decimalOn) integerText += resultText[i]; 
             else decimalText += resultText[i]; 
-        }
-        decimalText = parseFloat(decimalText).toFixed(10 - integerText.length);
-        if(resultNegative) result = (parseFloat(integerText) + parseFloat(decimalText)) * -1;
-        else result = parseFloat(integerText) + parseFloat(decimalText);
     }
+    decimalText = parseFloat(decimalText).toFixed(10 - integerText.length);
+    if(resultNegative) result = (parseFloat(integerText) + parseFloat(decimalText)) * -1;
+    else result = parseFloat(integerText) + parseFloat(decimalText);
 }
 
 function showResult(result){
