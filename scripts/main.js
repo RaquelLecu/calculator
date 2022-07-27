@@ -2,6 +2,8 @@ const display = document.querySelector('#display');
 const buttons = document.querySelector('#calculator').querySelectorAll('button');
 const commaButton = buttons[16];
 const C_button = buttons[0];
+const sign_Button = buttons[1];
+const zero_Button = buttons[15];
 
 let numText1 = "";
 let numText2= "";
@@ -11,6 +13,9 @@ let operatorOn = false;
 let commaOn = false;
 let signOn = false;
 let disabledButtons = false;
+
+//disabledButtonAndColor(sign_Button, true);
+//disabledButtonAndColor(zero_Button, true);
 
 buttons.forEach(button => button.addEventListener('click', event => {eventStart(event.target)}));
 
@@ -145,30 +150,28 @@ function getResult(){
 }
 
 function roundResult(){
-    let resultText = result.toString().replace("-","");
-    let integerText = "";
-    let decimalText = "0.";
-    let decimalOn = false;
-    let resultNegative = (result < 0);
+    result = result.toFixed(10);
+    if(result.toString().includes(".")){
+        let resultText = result.toString().replace("-","");
+        let integerText = "";
+        let decimalText = "0.";
+        let decimalOn = false;
+        let resultNegative = (result < 0);
 
-    for(i = 0; i < resultText.length; i++){
-        if(resultText[i] == ".") decimalOn = true;
-        else if(!decimalOn) integerText += resultText[i];
-        else decimalText += resultText[i]; 
+        for(i = 0; i < resultText.length; i++){
+            if(resultText[i] == ".") decimalOn = true;
+            else if(!decimalOn) integerText += resultText[i]; 
+            else decimalText += resultText[i]; 
+        }
+        decimalText = parseFloat(decimalText).toFixed(10 - integerText.length);
+        if(resultNegative) result = (parseFloat(integerText) + parseFloat(decimalText)) * -1;
+        else result = parseFloat(integerText) + parseFloat(decimalText);
     }
-    decimalText = parseFloat(decimalText).toFixed(10 - integerText.length);
-    if(resultNegative) result = (parseFloat(integerText) + parseFloat(decimalText)) * -1;
-    else result = parseFloat(integerText) + parseFloat(decimalText);
 }
 
 function showResult(result){
-    let lengthOnlyNumResult = result.toString().replace(/[^0-9]/g, '').length;
     let resultTextDisplay = result.toString().replace(".",",");
-
-    if(lengthOnlyNumResult > 10){
-            if(signOn && commaOn) display.innerHTML = resultTextDisplay.substring(0,12);
-            else if (signOn || commaOn) display.innerHTML = resultTextDisplay.substring(0,11);
-    }else display.innerHTML = resultTextDisplay;
+    display.innerHTML = resultTextDisplay;
 }
 
 function comma(){
@@ -238,7 +241,7 @@ function highLightingButton(button, active){
     else button.style.backgroundColor = "#fcc04b";
 }
 
-function disabledButtonsAndColor(button, disabled){
+function disabledButtonAndColor(button, disabled){
     if(disabled){
         button.disabled = disabled;
         button.style.color = "red";
@@ -268,8 +271,8 @@ function divide() {
 function displayError(){
     disabledButtons = true;
     display.innerHTML = "ERROR";
-    buttons.forEach(button => {disabledButtonsAndColor(button, true)});
-    disabledButtonsAndColor(C_button, false);
+    buttons.forEach(button => {disabledButtonAndColor(button, true)});
+    disabledButtonAndColor(C_button, false);
 }
 
 function finishOperation() {
@@ -288,7 +291,7 @@ function reset() {
     result = null;
     display.innerHTML = 0;
     if(disabledButtons){
-        buttons.forEach(button => {disabledButtonsAndColor(button, false)});
+        buttons.forEach(button => {disabledButtonAndColor(button, false)});
         disabledButtons = false;
     }
 }
