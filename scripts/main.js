@@ -1,21 +1,24 @@
 const display = document.querySelector('#display');
 const buttons = document.querySelector('#calculator').querySelectorAll('button');
+const cleanButton = buttons[0];
+const signButton = buttons[1];
+const zeroButton = buttons[15];
 const commaButton = buttons[16];
-const C_button = buttons[0];
-const sign_Button = buttons[1];
-const zero_Button = buttons[15];
+const maxValueResult = 9999999999;
+const minValueResult = -9999999999;
+const maxLengthValue = 10;
 
+let operatorButton;
 let numText1 = "";
 let numText2= "";
 let result;
-let operatorButton;
 let operatorOn = false;
 let commaOn = false;
 let signOn = false;
 let disabledButtons = false;
 
-//disabledButtonAndColor(sign_Button, true);
-//disabledButtonAndColor(zero_Button, true);
+setDisabledButton(signButton, true);
+setDisabledButton(zeroButton, true);
 
 buttons.forEach(button => button.addEventListener('click', event => {eventStart(event.target)}));
 
@@ -44,41 +47,43 @@ window.addEventListener("keydown", function (event) {
 });
 
 function eventStart(button){
-    if(button.getAttribute("class") == "numbers") addNum(button.innerHTML);
+    if(button.getAttribute("class") == "numbers") addNumText(button.innerHTML);
     else if(button.getAttribute("class") == "operator") operation(button);
     else if(button.getAttribute("id") == "equals") equals();
     else if(button.getAttribute("id") == "clear") reset();
     else if(button.getAttribute("id") == "comma") comma() ;
     else if(button.getAttribute("id") == "sign") sign();
+    checkButtonsDisabled();
 }
 
-function addNum(num) {
-    if(!operatorOn && numText1 == "" && num == "0") return;
+function addNumText(num) {
+    if(!operatorOn && numText1 == "0" && num == "0") return;
     if(operatorOn && numText2 == "0" && num == "0") return;
-    if(!operatorOn) addNum1(num);
-    else addNum2(num);    
+    if(!operatorOn) addNumText1(num);
+    else addNumText2(num);    
 }
 
-function addNum1(num){
-    let lengthOnlyNum1 = numText1.replace(/[^0-9]/g, '').length;
+function addNumText1(num){
+    let lengthOnlyNum = numText1.replace(/[^0-9]/g, '').length;
 
     if(numText1 == ""){
         result = null;
+        signOn = false;
         display.innerHTML = num; 
-        numText1 = num;        
-    }else if(!operatorOn && (10 >  lengthOnlyNum1)){ 
+        if(num != 0) numText1 = num;        
+    }else if(!operatorOn && (maxLengthValue >  lengthOnlyNum)){ 
         display.innerHTML = (display.innerHTML + num);
         numText1 += num;
     }
 }
 
-function addNum2(num){
-    let lengthOnlyNum2 = numText2.replace(/[^0-9]/g, '').length;
+function addNumText2(num){
+    let lengthOnlyNum = numText2.replace(/[^0-9]/g, '').length;
 
     if(numText2 == ""){
         display.innerHTML = num; 
         numText2 = num;
-    }else if(10 >  lengthOnlyNum2){
+    }else if(maxLengthValue >  lengthOnlyNum){
         if(numText2 == "0" && num != "0" ){
             numText2 = num;
             display.innerHTML = num;
@@ -93,14 +98,15 @@ function operation(operator){
     if(result != null && !operatorOn){
             numText1 = result.toString();
             result = null;
+            signOn = false;
             numText2 = "";
     }    
     if(numText2 == ""){
-        if(operatorButton != null) highLightingButton(operatorButton, false);
+        if(operatorButton != null) setHighLightingButton(operatorButton, false);
         operatorButton = operator;
         operatorOn = true;
-        highLightingButton(operatorButton, true);
-        if(commaOn) highLightingButton(commaButton, false);
+        setHighLightingButton(operatorButton, true);
+        if(commaOn) setHighLightingButton(commaButton, false);
         commaOn = false;
         signOn = false;
         if(numText1 == "") numText1 = "0";
@@ -109,27 +115,27 @@ function operation(operator){
 
 function doubleOperation(operator){
     getResult();
-    if(result > 9999999999 || result < -9999999999 || result == null) displayError();
+    if(result > maxValueResult || result < minValueResult || result == null) displayError();
     else{
         if(result.toString().includes(".")) result = roundResult(result);
         showResult(result);
         numText1 = result.toString();
         numText2 = "";
-        highLightingButton(operatorButton, false);
+        setHighLightingButton(operatorButton, false);
         operatorButton = operator;
-        highLightingButton(operator, true);
-        if(commaOn) highLightingButton(commaButton, false);
+        setHighLightingButton(operator, true);
+        if(commaOn) setHighLightingButton(commaButton, false);
         commaOn = false;
         signOn = false;        
     }
 }
 
 function equals() {
-    if(numText2 == "" && operatorOn){
-        displayError();
-    }else{
+    if(numText2 == "" && !operatorOn) return;
+    if(numText2 == "" && operatorOn) displayError();
+    else{
         getResult();
-        if(result > 9999999999 || result < -9999999999 || result == null) displayError();
+        if(result > maxValueResult || result < minValueResult|| result == null) displayError();
         else{
             if(result.toString().includes(".")) result = roundResult(result);
             showResult(result);
@@ -150,7 +156,7 @@ function getResult(){
 }
 
 function roundResult(result){
-    let resultText = result.toFixed(10).replace("-","");
+    let resultText = result.toFixed(maxLengthValue).replace("-","");
     let integerText = "";
     let decimalText = "0.";
     let decimalOn = false;
@@ -161,7 +167,7 @@ function roundResult(result){
             else if(!decimalOn) integerText += resultText[i]; 
             else decimalText += resultText[i]; 
     }
-    decimalText = parseFloat(decimalText).toFixed(10 - integerText.length);
+    decimalText = parseFloat(decimalText).toFixed(maxLengthValue - integerText.length);
     if(resultNegative) result = (parseFloat(integerText) + parseFloat(decimalText)) * -1;
     else result = parseFloat(integerText) + parseFloat(decimalText);
     return result;
@@ -177,23 +183,24 @@ function comma(){
     let lengthOnlyNum2 = numText2.replace(/[^0-9]/g, '').length;
 
     if(!commaOn){
-        highLightingButton(commaButton, true);
+        setHighLightingButton(commaButton, true);
         commaOn = true;
         if(!operatorOn && numText1 == ""){
             result = null;
+            signOn = false;
             display.innerHTML = "0,";
             numText1 = "0.";
         }else if (operatorOn && numText2 == ""){
             display.innerHTML = "0,";
             numText2 = "0.";
-        }else if (!operatorOn && (10 >  lengthOnlyNum1)){
+        }else if (!operatorOn && (maxLengthValue >  lengthOnlyNum1)){
             display.innerHTML += ","; 
             numText1 += ".";
-        }else if(operatorOn && (10 >  lengthOnlyNum2)){
+        }else if(operatorOn && (maxLengthValue >  lengthOnlyNum2)){
             display.innerHTML += ","; 
             numText2 += ".";
         }else{
-            highLightingButton(commaButton, false);
+            setHighLightingButton(commaButton, false);
             commaOn = false;
         }
     }
@@ -206,11 +213,11 @@ function sign(){
     } 
     if(numText1 == "") return;
     if(operatorOn && numText2 == "") return;
-    if(!signOn) signNegative();
-    else signPositive();    
+    if(!signOn) setSignNegativeOn();
+    else setSignPositiveOn();    
 }
 
-function signNegative(){
+function setSignNegativeOn(){
     if(!operatorOn && (numText1 != "0" && numText1 != "0.")){
         display.innerHTML = "-" + display.innerHTML;
         numText1 = "-" + numText1;
@@ -222,7 +229,7 @@ function signNegative(){
     } 
 }
 
-function signPositive(){
+function setSignPositiveOn(){
     if(!operatorOn && (numText1 != "0" && numText1 != "0.")){
         numText1 = numText1.replace("-","");
         display.innerHTML = numText1.replace(".",",");
@@ -234,20 +241,52 @@ function signPositive(){
     } 
 }
 
-function highLightingButton(button, active){
+function setHighLightingButton(button, active){
     if(active) button.style.backgroundColor = "orange";
     else button.style.backgroundColor = "#fcc04b";
 }
 
-function disabledButtonAndColor(button, disabled){
+function setDisabledButton(button, disabled){
     if(disabled){
         button.disabled = disabled;
         button.style.color = "red";
+        button.style.cursor = "not-allowed";
     } 
     else{
         button.disabled = disabled;
         button.style.color = "#ffffff";
+        button.style.cursor = "default";
     } 
+}
+
+function checkButtonsDisabled(){
+    let displayLength = display.innerHTML.replace(/[^0-9]/g, '').length;
+
+    if(!disabledButtons){
+        if(commaOn || maxLengthValue <= displayLength) setDisabledButton(commaButton, true);
+        else setDisabledButton(commaButton, false);
+        if(display.innerHTML == "0" || display.innerHTML == "0,") setDisabledButton(signButton, true);
+        else if(operatorOn && numText2 == "") setDisabledButton(signButton, true);
+        else setDisabledButton(signButton, false);
+        if(maxLengthValue <= displayLength && operatorOn && numText2 == ""){
+            buttons.forEach(button => {
+                if(button.classList.contains("numbers")) setDisabledButton(button, false)
+            });
+        }else if(maxLengthValue <= displayLength && !operatorOn && numText1 == ""){
+            buttons.forEach(button => {
+                if(button.classList.contains("numbers")) setDisabledButton(button, false)
+            });
+        }else if(maxLengthValue <= displayLength){
+            buttons.forEach(button => {
+                if(button.classList.contains("numbers")) setDisabledButton(button, true)
+            });
+        }else{
+            buttons.forEach(button => {
+                if(button.classList.contains("numbers")) setDisabledButton(button, false)
+            });
+        }
+        if(display.innerHTML == "0") setDisabledButton(zeroButton, true);
+    }
 }
 
 function plus(){
@@ -269,27 +308,29 @@ function divide() {
 function displayError(){
     disabledButtons = true;
     display.innerHTML = "ERROR";
-    buttons.forEach(button => {disabledButtonAndColor(button, true)});
-    disabledButtonAndColor(C_button, false);
+    buttons.forEach(button => {setDisabledButton(button, true)});
+    setDisabledButton(cleanButton, false);
 }
 
 function finishOperation() {
     numText1 = "";
     numText2 = "";
-    if(operatorOn) highLightingButton(operatorButton, false);
+    if(operatorOn) setHighLightingButton(operatorButton, false);
     operatorOn = false;
     operatorButton = null;
-    if(commaOn) highLightingButton(commaButton, false);
+    if(commaOn) setHighLightingButton(commaButton, false);
     commaOn = false;
-    signOn = false;
+    if(result < 0) signOn = true;
+    else signOn = false;
 }
 
 function reset() {
     finishOperation();
+    signOn = false;
     result = null;
     display.innerHTML = 0;
     if(disabledButtons){
-        buttons.forEach(button => {disabledButtonAndColor(button, false)});
+        buttons.forEach(button => {setDisabledButton(button, false)});
         disabledButtons = false;
     }
 }
