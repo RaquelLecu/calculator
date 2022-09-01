@@ -1,12 +1,12 @@
-const display = document.querySelector('#display');
-const buttons = document.querySelector('#calculator').querySelectorAll('button');
-const cleanButton = buttons[0];
-const signButton = buttons[1];
-const zeroButton = buttons[15];
-const commaButton = buttons[16];
-const maxValueResult = 9999999999;
-const minValueResult = -9999999999;
-const maxLengthValue = 10;
+const DISPLAY = document.querySelector('#display');
+const BUTTONS = document.querySelector('#calculator').querySelectorAll('button');
+const CLEAN_BUTTON = BUTTONS[0];
+const SIGN_BUTTON = BUTTONS[1];
+const ZERO_BUTTON = BUTTONS[15];
+const COMMA_BUTTON = BUTTONS[16];
+const MAX_VALUE_RESULT = 9999999999;
+const MIN_VALUE_RESULT = -9999999999;
+const MAX_LENGTH_VALUE = 10;
 
 let operatorButton;
 let numText1 = "";
@@ -15,35 +15,33 @@ let result;
 let operatorOn = false;
 let commaOn = false;
 let signOn = false;
-let disabledButtons = false;
+let disabledError = false;
 
-setDisabledButton(signButton, true);
-setDisabledButton(zeroButton, true);
+setDisabledButton(SIGN_BUTTON, true);
+setDisabledButton(ZERO_BUTTON, true);
 
-buttons.forEach(button => button.addEventListener('click', event => {eventStart(event.target)}));
+BUTTONS.forEach(button => button.addEventListener('click', event => {eventStart(event.target)}));
 
 window.addEventListener("keydown", function (event) {
     event.preventDefault();
-    if(event.key == "Escape") eventStart(buttons[0]);
-    if(!disabledButtons){
-        if(event.ctrlKey) eventStart(buttons[1]);
-        else if(event.key == 1) eventStart(buttons[11]);
-        else if(event.key == 2) eventStart(buttons[12]);
-        else if(event.key == 3) eventStart(buttons[13]);
-        else if(event.key == 4) eventStart(buttons[7]);
-        else if(event.key == 5) eventStart(buttons[8]);
-        else if(event.key == 6) eventStart(buttons[9]);
-        else if(event.key == 7) eventStart(buttons[3]);
-        else if(event.key == 8) eventStart(buttons[4]);
-        else if(event.key == 9) eventStart(buttons[5]);
-        else if(event.key == 0) eventStart(buttons[15]);
-        else if(event.key == "+") eventStart(buttons[14]);
-        else if(event.key == "-") eventStart(buttons[10]);
-        else if(event.key == "*") eventStart(buttons[6]);
-        else if(event.key == "/") eventStart(buttons[2]);
-        else if(event.key == "Enter") eventStart(buttons[17]);
-        else if(event.key == ",") eventStart(buttons[16]);
-    }
+    if(event.key == "Escape") BUTTONS[0].click();
+        if(event.ctrlKey) BUTTONS[1].click();
+        else if(event.key == 1) BUTTONS[11].click();
+        else if(event.key == 2) BUTTONS[12].click();
+        else if(event.key == 3) BUTTONS[13].click();
+        else if(event.key == 4) BUTTONS[7].click();
+        else if(event.key == 5) BUTTONS[8].click();
+        else if(event.key == 6) BUTTONS[9].click();
+        else if(event.key == 7) BUTTONS[3].click();
+        else if(event.key == 8) BUTTONS[4].click();
+        else if(event.key == 9) BUTTONS[5].click();
+        else if(event.key == 0) BUTTONS[15].click();
+        else if(event.key == "+") BUTTONS[14].click();
+        else if(event.key == "-") BUTTONS[10].click();
+        else if(event.key == "*") BUTTONS[6].click();
+        else if(event.key == "/") BUTTONS[2].click();
+        else if(event.key == "Enter") BUTTONS[17].click();
+        else if(event.key == ",") BUTTONS[16].click();
 });
 
 function eventStart(button){
@@ -69,10 +67,10 @@ function addNumText1(num){
     if(numText1 == ""){
         result = null;
         signOn = false;
-        display.innerHTML = num; 
+        DISPLAY.innerHTML = num; 
         if(num != 0) numText1 = num;        
-    }else if(!operatorOn && (maxLengthValue >  lengthOnlyNum)){ 
-        display.innerHTML = (display.innerHTML + num);
+    }else if(!operatorOn && (MAX_LENGTH_VALUE >  lengthOnlyNum)){ 
+        DISPLAY.innerHTML = (DISPLAY.innerHTML + num);
         numText1 += num;
     }
 }
@@ -81,14 +79,14 @@ function addNumText2(num){
     let lengthOnlyNum = numText2.replace(/[^0-9]/g, '').length;
 
     if(numText2 == ""){
-        display.innerHTML = num; 
+        DISPLAY.innerHTML = num; 
         numText2 = num;
-    }else if(maxLengthValue >  lengthOnlyNum){
+    }else if(MAX_LENGTH_VALUE >  lengthOnlyNum){
         if(numText2 == "0" && num != "0" ){
             numText2 = num;
-            display.innerHTML = num;
+            DISPLAY.innerHTML = num;
         }else{
-            display.innerHTML = (display.innerHTML + num);
+            DISPLAY.innerHTML = (DISPLAY.innerHTML + num);
             numText2 += num;
         }
     }
@@ -106,7 +104,7 @@ function operation(operator){
         operatorButton = operator;
         operatorOn = true;
         setHighLightingButton(operatorButton, true);
-        if(commaOn) setHighLightingButton(commaButton, false);
+        if(commaOn) setHighLightingButton(COMMA_BUTTON, false);
         commaOn = false;
         signOn = false;
         if(numText1 == "") numText1 = "0";
@@ -115,7 +113,7 @@ function operation(operator){
 
 function doubleOperation(operator){
     getResult();
-    if(result > maxValueResult || result < minValueResult || result == null) displayError();
+    if(result > MAX_VALUE_RESULT || result < MIN_VALUE_RESULT || result == null) displayError();
     else{
         if(result.toString().includes(".")) result = roundResult(result);
         showResult(result);
@@ -124,7 +122,7 @@ function doubleOperation(operator){
         setHighLightingButton(operatorButton, false);
         operatorButton = operator;
         setHighLightingButton(operator, true);
-        if(commaOn) setHighLightingButton(commaButton, false);
+        if(commaOn) setHighLightingButton(COMMA_BUTTON, false);
         commaOn = false;
         signOn = false;        
     }
@@ -135,7 +133,7 @@ function equals() {
     if(numText2 == "" && operatorOn) displayError();
     else{
         getResult();
-        if(result > maxValueResult || result < minValueResult|| result == null) displayError();
+        if(result > MAX_VALUE_RESULT || result < MIN_VALUE_RESULT|| result == null) displayError();
         else{
             if(result.toString().includes(".")) result = roundResult(result);
             showResult(result);
@@ -156,7 +154,7 @@ function getResult(){
 }
 
 function roundResult(result){
-    let resultText = result.toFixed(maxLengthValue).replace("-","");
+    let resultText = result.toFixed(MAX_LENGTH_VALUE).replace("-","");
     let integerText = "";
     let decimalText = "0.";
     let decimalOn = false;
@@ -167,7 +165,7 @@ function roundResult(result){
             else if(!decimalOn) integerText += resultText[i]; 
             else decimalText += resultText[i]; 
     }
-    decimalText = parseFloat(decimalText).toFixed(maxLengthValue - integerText.length);
+    decimalText = parseFloat(decimalText).toFixed(MAX_LENGTH_VALUE - integerText.length);
     if(resultNegative) result = (parseFloat(integerText) + parseFloat(decimalText)) * -1;
     else result = parseFloat(integerText) + parseFloat(decimalText);
     return result;
@@ -175,7 +173,7 @@ function roundResult(result){
 
 function showResult(result){
     let resultTextDisplay = result.toString().replace(".",",");
-    display.innerHTML = resultTextDisplay;
+    DISPLAY.innerHTML = resultTextDisplay;
 }
 
 function comma(){
@@ -183,24 +181,24 @@ function comma(){
     let lengthOnlyNum2 = numText2.replace(/[^0-9]/g, '').length;
 
     if(!commaOn){
-        setHighLightingButton(commaButton, true);
+        setHighLightingButton(COMMA_BUTTON, true);
         commaOn = true;
         if(!operatorOn && numText1 == ""){
             result = null;
             signOn = false;
-            display.innerHTML = "0,";
+            DISPLAY.innerHTML = "0,";
             numText1 = "0.";
         }else if (operatorOn && numText2 == ""){
-            display.innerHTML = "0,";
+            DISPLAY.innerHTML = "0,";
             numText2 = "0.";
-        }else if (!operatorOn && (maxLengthValue >  lengthOnlyNum1)){
-            display.innerHTML += ","; 
+        }else if (!operatorOn && (MAX_LENGTH_VALUE >  lengthOnlyNum1)){
+            DISPLAY.innerHTML += ","; 
             numText1 += ".";
-        }else if(operatorOn && (maxLengthValue >  lengthOnlyNum2)){
-            display.innerHTML += ","; 
+        }else if(operatorOn && (MAX_LENGTH_VALUE >  lengthOnlyNum2)){
+            DISPLAY.innerHTML += ","; 
             numText2 += ".";
         }else{
-            setHighLightingButton(commaButton, false);
+            setHighLightingButton(COMMA_BUTTON, false);
             commaOn = false;
         }
     }
@@ -219,11 +217,11 @@ function sign(){
 
 function setSignNegativeOn(){
     if(!operatorOn && (numText1 != "0" && numText1 != "0.")){
-        display.innerHTML = "-" + display.innerHTML;
+        DISPLAY.innerHTML = "-" + DISPLAY.innerHTML;
         numText1 = "-" + numText1;
         signOn = true;
     }else if(operatorOn && (numText2 != "0" && numText2 != "0.")){
-        display.innerHTML = "-" + display.innerHTML;
+        DISPLAY.innerHTML = "-" + DISPLAY.innerHTML;
         numText2 = "-" + numText2;
         signOn = true;
     } 
@@ -232,11 +230,11 @@ function setSignNegativeOn(){
 function setSignPositiveOn(){
     if(!operatorOn && (numText1 != "0" && numText1 != "0.")){
         numText1 = numText1.replace("-","");
-        display.innerHTML = numText1.replace(".",",");
+        DISPLAY.innerHTML = numText1.replace(".",",");
         signOn = false;
     }else if(operatorOn && (numText2 != "0" && numText2 != "0.")){
         numText2 = numText2.replace("-","");
-        display.innerHTML = numText2.replace(".",",");
+        DISPLAY.innerHTML = numText2.replace(".",",");
         signOn = false;
     } 
 }
@@ -260,32 +258,32 @@ function setDisabledButton(button, disabled){
 }
 
 function checkButtonsDisabled(){
-    let displayLength = display.innerHTML.replace(/[^0-9]/g, '').length;
+    let displayLength = DISPLAY.innerHTML.replace(/[^0-9]/g, '').length;
 
-    if(!disabledButtons){
-        if(commaOn || maxLengthValue <= displayLength) setDisabledButton(commaButton, true);
-        else setDisabledButton(commaButton, false);
-        if(display.innerHTML == "0" || display.innerHTML == "0,") setDisabledButton(signButton, true);
-        else if(operatorOn && numText2 == "") setDisabledButton(signButton, true);
-        else setDisabledButton(signButton, false);
-        if(maxLengthValue <= displayLength && operatorOn && numText2 == ""){
-            buttons.forEach(button => {
+    if(!disabledError){
+        if(commaOn || MAX_LENGTH_VALUE <= displayLength) setDisabledButton(COMMA_BUTTON, true);
+        else setDisabledButton(COMMA_BUTTON, false);
+        if(DISPLAY.innerHTML == "0" || DISPLAY.innerHTML == "0,") setDisabledButton(SIGN_BUTTON, true);
+        else if(operatorOn && numText2 == "") setDisabledButton(SIGN_BUTTON, true);
+        else setDisabledButton(SIGN_BUTTON, false);
+        if(MAX_LENGTH_VALUE <= displayLength && operatorOn && numText2 == ""){
+            BUTTONS.forEach(button => {
                 if(button.classList.contains("numbers")) setDisabledButton(button, false)
             });
-        }else if(maxLengthValue <= displayLength && !operatorOn && numText1 == ""){
-            buttons.forEach(button => {
+        }else if(MAX_LENGTH_VALUE <= displayLength && !operatorOn && numText1 == ""){
+            BUTTONS.forEach(button => {
                 if(button.classList.contains("numbers")) setDisabledButton(button, false)
             });
-        }else if(maxLengthValue <= displayLength){
-            buttons.forEach(button => {
+        }else if(MAX_LENGTH_VALUE <= displayLength){
+            BUTTONS.forEach(button => {
                 if(button.classList.contains("numbers")) setDisabledButton(button, true)
             });
         }else{
-            buttons.forEach(button => {
+            BUTTONS.forEach(button => {
                 if(button.classList.contains("numbers")) setDisabledButton(button, false)
             });
         }
-        if(display.innerHTML == "0") setDisabledButton(zeroButton, true);
+        if(DISPLAY.innerHTML == "0") setDisabledButton(ZERO_BUTTON, true);
     }
 }
 
@@ -306,10 +304,10 @@ function divide() {
 }
 
 function displayError(){
-    disabledButtons = true;
-    display.innerHTML = "ERROR";
-    buttons.forEach(button => {setDisabledButton(button, true)});
-    setDisabledButton(cleanButton, false);
+    disabledError = true;
+    DISPLAY.innerHTML = "ERROR";
+    BUTTONS.forEach(button => {setDisabledButton(button, true)});
+    setDisabledButton(CLEAN_BUTTON, false);
 }
 
 function finishOperation() {
@@ -318,7 +316,7 @@ function finishOperation() {
     if(operatorOn) setHighLightingButton(operatorButton, false);
     operatorOn = false;
     operatorButton = null;
-    if(commaOn) setHighLightingButton(commaButton, false);
+    if(commaOn) setHighLightingButton(COMMA_BUTTON, false);
     commaOn = false;
     if(result < 0) signOn = true;
     else signOn = false;
@@ -328,9 +326,9 @@ function reset() {
     finishOperation();
     signOn = false;
     result = null;
-    display.innerHTML = 0;
-    if(disabledButtons){
-        buttons.forEach(button => {setDisabledButton(button, false)});
-        disabledButtons = false;
+    DISPLAY.innerHTML = 0;
+    if(disabledError){
+        BUTTONS.forEach(button => {setDisabledButton(button, false)});
+        disabledError = false;
     }
 }
