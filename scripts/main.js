@@ -129,8 +129,12 @@ function doubleOperation(operator){
 }
 
 function equals() {
-    if(numText2 == "" && !operatorOn) return;
-    if(numText2 == "" && operatorOn) displayError();
+    if(numText2 == "" && !operatorOn){ 
+        if(numText1 == "") numText1 = "0";
+        result = parseFloat(numText1);
+        showResult(result);
+        finishOperation();
+    }else if(numText2 == "" && operatorOn) displayError();
     else{
         getResult();
         if(result > MAX_VALUE_RESULT || result < MIN_VALUE_RESULT|| result == null) displayError();
